@@ -1,0 +1,87 @@
+
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>SCOOTGANG</title>
+  <style>
+    body {
+      margin: 0;
+      background: #0d0d0d;
+      color: white;
+      font-family: Arial, sans-serif;
+      text-align: center;
+    }
+    header {
+      padding: 35px 15px;
+      background: #171717;
+      border-bottom: 3px solid #e50914;
+    }
+    h1 {
+      color: #ff2636;
+      font-size: 42px;
+      margin: 10px 0;
+    }
+    .panel {
+      background: #1c1c1c;
+      border: 1px solid #444;
+      border-radius: 15px;
+      padding: 25px;
+      margin: 30px auto;
+      max-width: 400px;
+    }
+    button {
+      background: #e50914;
+      color: white;
+      border: none;
+      padding: 16px 25px;
+      border-radius: 10px;
+      font-size: 17px;
+      cursor: pointer;
+    }
+    #estado {
+      margin-top: 20px;
+      color: #aaa;
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>♛ SCOOTGANG</h1>
+    <p>Scooter Control Center</p>
+  </header>
+
+  <div class="panel">
+    <h2>Conexión Bluetooth</h2>
+    <p>Panel de conexión para patinetes</p>
+    <button onclick="conectar()">Conectar patinete</button>
+    <p id="estado">Desconectado</p>
+  </div>
+
+  <script>
+    async function conectar() {
+      const estado = document.getElementById("estado");
+
+      if (!navigator.bluetooth) {
+        estado.textContent =
+          "Este navegador no admite Web Bluetooth.";
+        return;
+      }
+
+      try {
+        const dispositivo =
+          await navigator.bluetooth.requestDevice({
+            acceptAllDevices: true
+          });
+
+        estado.textContent =
+          "Seleccionado: " + (dispositivo.name || "Sin nombre");
+
+      } catch (error) {
+        estado.textContent = "No conectado: " + error.message;
+      }
+    }
+  </script>
+</body>
+</html>
