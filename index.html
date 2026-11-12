@@ -141,6 +141,7 @@
     }
   }
 
+
 async function explorarServicios() {
   const salida = document.getElementById("estado");
 
@@ -150,21 +151,40 @@ async function explorarServicios() {
   }
 
   try {
-    salida.textContent = "Buscando servicios...";
+    salida.textContent = "Analizando Bluetooth...";
 
-    const servicios =
-      await servidor.getPrimaryServices();
+    const servicios = await servidor.getPrimaryServices();
+    let resultado = "";
 
-    const uuids = servicios.map(s => s.uuid);
+    for (const servicio of servicios) {
+      resultado += "\nSERVICIO:\n" + servicio.uuid;
 
-    salida.textContent = uuids.length
-      ? "Servicios: " + uuids.join(", ")
-      : "No se encontraron servicios accesibles";
+      try {
+        const caracteristicas =
+          await servicio.getCharacteristics();
+
+        for (const c of caracteristicas) {
+          resultado += "\n\nCaracterística:\n" + c.uuid;
+          resultado += "\nLeer: " + c.properties.read;
+          resultado += "\nEscribir: " + c.properties.write;
+          resultado += "\nNotificaciones: " + c.properties.notify;
+        }
+      } catch (e) {
+        resultado += "\nError: " + e.message;
+      }
+
+      resultado += "\n\n-----------------\n";
+    }
+
+    salida.style.whiteSpace = "pre-wrap";
+    salida.style.overflowWrap = "anywhere";
+    salida.textContent = resultado;
 
   } catch (error) {
     salida.textContent = "Error: " + error.message;
   }
 }
+
 </script>
 
 </body>
