@@ -2,180 +2,538 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>SCOOTGANG</title>
-  <style>
-    body {
-      margin: 0;
-      background: #0d0d0d;
-      color: white;
-      font-family: Arial, sans-serif;
-      text-align: center;
-    }
-    header {
-      padding: 35px 15px;
-      background: #171717;
-      border-bottom: 3px solid #e50914;
-    }
-    h1 {
-      color: #ff2636;
-      font-size: 42px;
-      margin: 10px 0;
-    }
-    .panel {
-      background: #1c1c1c;
-      border: 1px solid #444;
-      border-radius: 15px;
-      padding: 25px;
-      margin: 30px auto;
-      max-width: 400px;
-    }
-    button {
-      background: #e50914;
-      color: white;
-      border: none;
-      padding: 16px 25px;
-      border-radius: 10px;
-      font-size: 17px;
-      cursor: pointer;
-    }
-    #estado {
-      margin-top: 20px;
-      color: #aaa;
-    }
-  </style>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#0b0b0d">
+<title>SCOOTGANG | Control Center</title>
+
+<style>
+:root {
+  color-scheme: dark;
+  --bg: #0b0b0d;
+  --panel: #19191d;
+  --line: #34343a;
+  --red: #ed2639;
+  --muted: #a5a5ad;
+}
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: white;
+  font-family: system-ui, Arial, sans-serif;
+}
+
+header {
+  text-align: center;
+  border-bottom: 2px solid var(--red);
+  padding: 20px 10px 16px;
+  background: #141416;
+}
+
+header img {
+  width: 100%;
+  max-width: 430px;
+  height: auto;
+  display: block;
+  margin: auto;
+}
+
+header p {
+  color: #aaa;
+  letter-spacing: .18em;
+  font-size: 11px;
+}
+
+main {
+  max-width: 650px;
+  margin: auto;
+  padding: 0 16px 40px;
+}
+
+.top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin: 22px 0 14px;
+}
+
+.top h1 {
+  font-size: 20px;
+  margin: 0;
+}
+
+.pill {
+  border: 1px solid #555;
+  border-radius: 20px;
+  color: #bbb;
+  font-size: 12px;
+  padding: 7px 11px;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--line);
+  border-radius: 17px;
+  padding: 18px;
+  margin-bottom: 14px;
+}
+
+.card h2 {
+  font-size: 17px;
+  margin: 0 0 14px;
+}
+
+.metrics, .proGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 10px;
+}
+
+.metric {
+  background: #222227;
+  border-radius: 12px;
+  padding: 14px;
+}
+
+.metric small {
+  display: block;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.metric strong {
+  font-size: 19px;
+}
+
+.btn {
+  border: 0;
+  border-radius: 10px;
+  background: var(--red);
+  padding: 13px 15px;
+  color: white;
+  font-weight: 700;
+  font-size: 14px;
+  cursor: pointer;
+}
+
+.btn.secondary {
+  background: #34343b;
+}
+
+.btn:disabled {
+  opacity: .45;
+  cursor: not-allowed;
+}
+
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+.actions .btn {
+  flex: 1 1 140px;
+}
+
+.muted {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.map {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 13px 0;
+  border-top: 1px solid #38383e;
+  gap: 12px;
+}
+
+.hint {
+  font-size: 12px;
+  color: var(--muted);
+  margin-top: 4px;
+}
+
+.tag {
+  font-size: 11px;
+  color: #bbb;
+  border: 1px solid #555;
+  border-radius: 12px;
+  padding: 5px 7px;
+}
+
+.log {
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+  max-height: 240px;
+  overflow: auto;
+  color: #ddd;
+  background: #111114;
+  border: 1px solid #333;
+  padding: 12px;
+  border-radius: 10px;
+  font-size: 12px;
+  line-height: 1.5;
+}
+
+.proLink {
+  display: block;
+  margin: 16px auto;
+  color: #aaa;
+  background: none;
+  border: none;
+  text-decoration: underline;
+  cursor: pointer;
+  font-size: 13px;
+}
+
+.hidden {
+  display: none !important;
+}
+
+.input {
+  width: 100%;
+  padding: 13px;
+  background: #111;
+  border: 1px solid #555;
+  border-radius: 10px;
+  color: white;
+  font-size: 16px;
+  margin: 8px 0;
+}
+
+footer {
+  text-align: center;
+  color: #777;
+  font-size: 11px;
+  margin-top: 20px;
+}
+</style>
 </head>
+
 <body>
-  
+
 <header>
   <img
     src="D429C99F-3199-476A-95BB-5512C3CA2AB5.png"
     alt="SCOOTGANG"
-    style="width:100%; max-width:700px; height:auto; display:block; margin:0 auto 10px;"
   >
-  <p>Scooter Control Center</p>
+  <p>SCOOTER CONTROL CENTER</p>
 </header>
 
-  <div class="panel">
-    <h2>Conexión Bluetooth</h2>
-    <p>Panel de conexión para patinetes</p>
-    <button onclick="conectar()">Conectar patinete</button>
-    <button onclick="desconectar()">
-  Desconectar
-</button>
-    
-<button onclick="explorarServicios()">
-  Explorar Bluetooth
-</button>
+<main>
 
-<button onclick="escucharBluetooth()">
-  Leer datos
-</button>
+<div class="top">
+  <h1>Mi patinete</h1>
+  <span id="conexion" class="pill">
+    Sin conectar
+  </span>
+</div>
 
-<p id="estado">Desconectado</p>
+<section class="card">
+
+  <div class="metrics">
+
+    <div class="metric">
+      <small>🔋 Batería</small>
+      <strong>— %</strong>
+    </div>
+
+    <div class="metric">
+      <small>⚡ Velocidad</small>
+      <strong>— km/h</strong>
+    </div>
+
+    <div class="metric">
+      <small>🛠 Estado</small>
+      <strong>Sin datos</strong>
+    </div>
+
+    <div class="metric">
+      <small>📶 Bluetooth</small>
+      <strong id="estadoCorto">
+        Desconectado
+      </strong>
+    </div>
 
   </div>
 
-  
+  <p class="muted" id="nombre">
+    No se ha seleccionado ningún patinete.
+  </p>
+
+  <div class="actions">
+    <button class="btn" onclick="conectar()">
+      Conectar patinete
+    </button>
+
+    <button class="btn secondary"
+      onclick="desconectar()">
+      Desconectar
+    </button>
+  </div>
+
+</section>
+
+<section class="card">
+
+  <h2>🗺 Mapas de conducción</h2>
+
+  <div class="map">
+    <div>
+      <strong>Mapa 1 — Original</strong>
+      <div class="hint">
+        Disponibilidad por verificar
+      </div>
+    </div>
+    <span class="tag">No disponible</span>
+  </div>
+
+  <div class="map">
+    <div>
+      <strong>Mapa 2 — Personalizado</strong>
+      <div class="hint">
+        Requiere autorización y compatibilidad
+      </div>
+    </div>
+    <span class="tag">No disponible</span>
+  </div>
+
+  <p class="muted">
+    Los cambios de mapa se habilitarán
+    cuando comprobemos el protocolo
+    y los permisos del patinete.
+  </p>
+
+</section>
+
+<section class="card">
+
+  <h2>🔧 Diagnóstico Bluetooth</h2>
+
+  <div class="actions">
+
+    <button class="btn secondary"
+      onclick="explorarServicios()">
+      Explorar Bluetooth
+    </button>
+
+    <button class="btn secondary"
+      onclick="escucharBluetooth()">
+      Leer datos
+    </button>
+
+  </div>
+
+  <p class="muted">
+    Consulta de servicios y recepción
+    de datos Bluetooth.
+  </p>
+
+  <div id="estado" class="log"
+    role="status" aria-live="polite">
+    Desconectado
+  </div>
+
+</section>
+
+<button class="proLink"
+  onclick="mostrarPro()">
+  🔒 Acceso SCOOTGANG PRO
+</button>
+
+<section class="card hidden" id="accesoPro">
+
+  <h2>👑 SCOOTGANG PRO</h2>
+
+  <p class="muted">
+    Acceso exclusivo para administradores
+    y personal autorizado.
+  </p>
+
+  <input
+    class="input"
+    type="password"
+    placeholder="Contraseña PRO"
+    disabled
+  >
+
+  <button class="btn" disabled>
+    Entrar como administrador
+  </button>
+
+  <p class="muted">
+    Inicio de sesión pendiente de
+    implementar con autenticación segura.
+  </p>
+
+  <div class="proGrid">
+
+    <div class="metric">
+      🛠 Diagnóstico avanzado
+      <small>Bloqueado</small>
+    </div>
+
+    <div class="metric">
+      ⚙️ Ajustes
+      <small>Bloqueado</small>
+    </div>
+
+    <div class="metric">
+      🗺 Gestión de mapas
+      <small>Bloqueado</small>
+    </div>
+
+    <div class="metric">
+      👥 Clientes
+      <small>Bloqueado</small>
+    </div>
+
+  </div>
+
+</section>
+
+<footer>
+  SCOOTGANG · Versión de desarrollo
+</footer>
+
+</main>
+
 <script>
-  let dispositivo = null;
-  let servidor = null;
 
-  const estado = () =>
-    document.getElementById("estado");
+let dispositivo = null;
+let servidor = null;
 
-  function desconectado() {
-    servidor = null;
-    estado().textContent =
-      "Bluetooth desconectado";
+const estado = () =>
+  document.getElementById("estado");
+
+function mostrarPro() {
+  document.getElementById("accesoPro")
+    .classList.toggle("hidden");
+}
+
+function estadoConexion(texto, conectado = false) {
+
+  document.getElementById("conexion").textContent =
+    conectado ? "Conectado" : "Sin conectar";
+
+  document.getElementById("estadoCorto").textContent =
+    conectado ? "Conectado" : "Desconectado";
+
+  estado().textContent = texto;
+}
+
+function desconectado() {
+  servidor = null;
+  estadoConexion("Bluetooth desconectado");
+}
+
+async function conectar() {
+
+  if (!navigator.bluetooth) {
+    estadoConexion(
+      "Web Bluetooth no disponible. Usa Bluefy en iPhone."
+    );
+    return;
   }
 
-  async function conectar() {
-    if (!navigator.bluetooth) {
-      estado().textContent =
-        "Web Bluetooth no disponible";
-      return;
+  try {
+
+    estado().textContent = "Buscando patinete...";
+
+    dispositivo =
+      await navigator.bluetooth.requestDevice({
+        acceptAllDevices: true
+      });
+
+    document.getElementById("nombre").textContent =
+      dispositivo.name || "Patinete sin nombre";
+
+    dispositivo.addEventListener(
+      "gattserverdisconnected",
+      desconectado
+    );
+
+    estado().textContent = "Conectando...";
+
+    if (!dispositivo.gatt) {
+      throw Error("GATT no disponible");
     }
 
-    try {
-      estado().textContent =
-        "Buscando patinete...";
+    servidor = await dispositivo.gatt.connect();
 
-      dispositivo =
-        await navigator.bluetooth.requestDevice({
-          acceptAllDevices: true
-        });
+    estadoConexion(
+      "✅ Conectado: " +
+      (dispositivo.name || "Patinete"),
+      true
+    );
 
-      estado().textContent =
-        "Conectando con " +
-        (dispositivo.name || "patinete") +
-        "...";
+  } catch (error) {
+    estado().textContent = "Error: " + error.message;
+  }
+}
 
-      dispositivo.addEventListener(
-        "gattserverdisconnected",
-        desconectado
-      );
+function desconectar() {
 
-      if (!dispositivo.gatt) {
-        throw new Error(
-          "El dispositivo no admite GATT desde este navegador"
-        );
-      }
-
-      servidor = await dispositivo.gatt.connect();
-
-      if (servidor.connected) {
-        estado().textContent =
-          "✅ Conectado: " +
-          (dispositivo.name || "Patinete");
-      } else {
-        estado().textContent =
-          "No se pudo conectar";
-      }
-
-    } catch (error) {
-      estado().textContent =
-        "Error: " + error.message;
-    }
+  if (dispositivo?.gatt?.connected) {
+    dispositivo.gatt.disconnect();
+  } else {
+    desconectado();
   }
 
-  function desconectar() {
-    if (dispositivo?.gatt?.connected) {
-      dispositivo.gatt.disconnect();
-    } else {
-      desconectado();
-    }
-  }
-
+}
 
 async function explorarServicios() {
-  const salida = document.getElementById("estado");
 
-  if (!servidor || !servidor.connected) {
+  const salida = estado();
+
+  if (!servidor?.connected) {
     salida.textContent = "Primero conecta el patinete";
     return;
   }
 
   try {
+
     salida.textContent = "Analizando Bluetooth...";
 
-    const servicios = await servidor.getPrimaryServices();
+    const servicios =
+      await servidor.getPrimaryServices();
+
     let resultado = "";
 
     for (const servicio of servicios) {
+
       resultado += "\nSERVICIO:\n" + servicio.uuid;
 
       try {
+
         const caracteristicas =
           await servicio.getCharacteristics();
 
         for (const c of caracteristicas) {
-          resultado += "\n\nCaracterística:\n" + c.uuid;
-          resultado += "\nLeer: " + c.properties.read;
-          resultado += "\nEscribir: " + c.properties.write;
-          resultado += "\nNotificaciones: " + c.properties.notify;
+
+          resultado +=
+            "\n\nCaracterística:\n" + c.uuid;
+
+          resultado +=
+            "\nLeer: " + Boolean(c.properties.read);
+
+          resultado +=
+            "\nEscribir: " +
+            Boolean(
+              c.properties.write ||
+              c.properties.writeWithoutResponse
+            );
+
+          resultado +=
+            "\nNotificaciones: " +
+            Boolean(c.properties.notify);
         }
+
       } catch (e) {
         resultado += "\nError: " + e.message;
       }
@@ -183,71 +541,102 @@ async function explorarServicios() {
       resultado += "\n\n-----------------\n";
     }
 
-    salida.style.whiteSpace = "pre-wrap";
-    salida.style.overflowWrap = "anywhere";
-    salida.textContent = resultado;
+    salida.textContent =
+      resultado || "Sin servicios accesibles";
 
   } catch (error) {
     salida.textContent = "Error: " + error.message;
   }
 }
 
+const canales = [
+
+  {
+    nombre: "Nordic",
+    servicio:
+      "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
+    caracteristica:
+      "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+  },
+
+  {
+    nombre: "Ninebot 004",
+    servicio:
+      "6e400001-0000-0000-006e-696e65626f74",
+    caracteristica:
+      "6e400004-0000-0000-006e-696e65626f74"
+  },
+
+  {
+    nombre: "Ninebot 006",
+    servicio:
+      "6e400001-0000-0000-006e-696e65626f74",
+    caracteristica:
+      "6e400006-0000-0000-006e-696e65626f74"
+  }
+
+];
+
+const escuchando = new Set();
 
 async function escucharBluetooth() {
-  const salida = document.getElementById("estado");
 
-  if (!servidor || !servidor.connected) {
+  const salida = estado();
+
+  if (!servidor?.connected) {
     salida.textContent = "Conecta primero el patinete";
     return;
   }
 
-  const canales = [
-    {
-      nombre: "Nordic",
-      servicio: "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
-      caracteristica: "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
-    },
-    {
-      nombre: "Ninebot 004",
-      servicio: "6e400001-0000-0000-006e-696e65626f74",
-      caracteristica: "6e400004-0000-0000-006e-696e65626f74"
-    },
-    {
-      nombre: "Ninebot 006",
-      servicio: "6e400001-0000-0000-006e-696e65626f74",
-      caracteristica: "6e400006-0000-0000-006e-696e65626f74"
-    }
-  ];
-
-  salida.style.whiteSpace = "pre-wrap";
-  salida.style.overflowWrap = "anywhere";
-  salida.textContent = "Iniciando escucha...\n";
+  salida.textContent =
+    "Iniciando recepción de datos...\n";
 
   for (const canal of canales) {
+
     try {
+
       const servicio =
-        await servidor.getPrimaryService(canal.servicio);
+        await servidor.getPrimaryService(
+          canal.servicio
+        );
 
       const caracteristica =
-        await servicio.getCharacteristic(canal.caracteristica);
+        await servicio.getCharacteristic(
+          canal.caracteristica
+        );
 
-      caracteristica.addEventListener(
-        "characteristicvaluechanged",
-        evento => {
-          const datos = new Uint8Array(
-            evento.target.value.buffer,
-            evento.target.value.byteOffset,
-            evento.target.value.byteLength
-          );
+      const clave =
+        canal.servicio + canal.caracteristica;
 
-          const hex = Array.from(datos)
-            .map(x => x.toString(16).padStart(2, "0"))
-            .join(" ");
+      if (!escuchando.has(clave)) {
 
-          salida.textContent +=
-            "\n" + canal.nombre + ": " + hex;
-        }
-      );
+        caracteristica.addEventListener(
+          "characteristicvaluechanged",
+          evento => {
+
+            const v = evento.target.value;
+
+            const datos = new Uint8Array(
+              v.buffer,
+              v.byteOffset,
+              v.byteLength
+            );
+
+            const hex = Array.from(datos)
+              .map(x =>
+                x.toString(16).padStart(2, "0")
+              )
+              .join(" ");
+
+            salida.textContent +=
+              "\n" + canal.nombre + ": " + hex;
+
+            salida.scrollTop = salida.scrollHeight;
+          }
+        );
+
+        escuchando.add(clave);
+      }
 
       await caracteristica.startNotifications();
 
@@ -255,9 +644,13 @@ async function escucharBluetooth() {
         "\nEscuchando: " + canal.nombre;
 
     } catch (error) {
+
       salida.textContent +=
-        "\nError " + canal.nombre +
-        ": " + error.message;
+        "\nError " +
+        canal.nombre +
+        ": " +
+        error.message;
+
     }
   }
 }
