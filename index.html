@@ -64,6 +64,9 @@
     <button onclick="desconectar()">
   Desconectar
 </button>
+    <button onclick="explorarServicios()">
+  Explorar Bluetooth
+</button>
     <p id="estado">Desconectado</p>
   </div>
 
@@ -137,6 +140,31 @@
       desconectado();
     }
   }
+
+async function explorarServicios() {
+  const salida = document.getElementById("estado");
+
+  if (!servidor || !servidor.connected) {
+    salida.textContent = "Primero conecta el patinete";
+    return;
+  }
+
+  try {
+    salida.textContent = "Buscando servicios...";
+
+    const servicios =
+      await servidor.getPrimaryServices();
+
+    const uuids = servicios.map(s => s.uuid);
+
+    salida.textContent = uuids.length
+      ? "Servicios: " + uuids.join(", ")
+      : "No se encontraron servicios accesibles";
+
+  } catch (error) {
+    salida.textContent = "Error: " + error.message;
+  }
+}
 </script>
 
 </body>
