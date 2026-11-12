@@ -61,32 +61,83 @@
     <h2>Conexión Bluetooth</h2>
     <p>Panel de conexión para patinetes</p>
     <button onclick="conectar()">Conectar patinete</button>
+    <button onclick="desconectar()">
+  Desconectar
+</button>
     <p id="estado">Desconectado</p>
   </div>
 
-  <script>
-    async function conectar() {
-      const estado = document.getElementById("estado");
+  
+<script>
+  let dispositivo = null;
+  let servidor = null;
 
-      if (!navigator.bluetooth) {
-        estado.textContent =
-          "Este navegador no admite Web Bluetooth.";
-        return;
-      }
+  const estado = () =>
+    document.getElementById("estado");
 
-      try {
-        const dispositivo =
-          await navigator.bluetooth.requestDevice({
-            acceptAllDevices: true
-          });
+  function desconectado() {
+    servidor = null;
+    estado().textContent =
+      "Bluetooth desconectado";
+  }
 
-        estado.textContent =
-          "Seleccionado: " + (dispositivo.name || "Sin nombre");
-
-      } catch (error) {
-        estado.textContent = "No conectado: " + error.message;
-      }
+  async function conectar() {
+    if (!navigator.bluetooth) {
+      estado().textContent =
+        "Web Bluetooth no disponible";
+      return;
     }
-  </script>
+
+    try {
+      estado().textContent =
+        "Buscando patinete...";
+
+      dispositivo =
+        await navigator.bluetooth.requestDevice({
+          acceptAllDevices: true
+        });
+
+      estado().textContent =
+        "Conectando con " +
+        (dispositivo.name || "patinete") +
+        "...";
+
+      dispositivo.addEventListener(
+        "gattserverdisconnected",
+        desconectado
+      );
+
+      if (!dispositivo.gatt) {
+        throw new Error(
+          "El dispositivo no admite GATT desde este navegador"
+        );
+      }
+
+      servidor = await dispositivo.gatt.connect();
+
+      if (servidor.connected) {
+        estado().textContent =
+          "✅ Conectado: " +
+          (dispositivo.name || "Patinete");
+      } else {
+        estado().textContent =
+          "No se pudo conectar";
+      }
+
+    } catch (error) {
+      estado().textContent =
+        "Error: " + error.message;
+    }
+  }
+
+  function desconectar() {
+    if (dispositivo?.gatt?.connected) {
+      dispositivo.gatt.disconnect();
+    } else {
+      desconectado();
+    }
+  }
+</script>
+
 </body>
 </html>
