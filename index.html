@@ -64,10 +64,17 @@
     <button onclick="desconectar()">
   Desconectar
 </button>
-    <button onclick="explorarServicios()">
+    
+<button onclick="explorarServicios()">
   Explorar Bluetooth
 </button>
-    <p id="estado">Desconectado</p>
+
+<button onclick="escucharBluetooth()">
+  Leer datos
+</button>
+
+<p id="estado">Desconectado</p>
+
   </div>
 
   
@@ -182,6 +189,76 @@ async function explorarServicios() {
 
   } catch (error) {
     salida.textContent = "Error: " + error.message;
+  }
+}
+
+
+async function escucharBluetooth() {
+  const salida = document.getElementById("estado");
+
+  if (!servidor || !servidor.connected) {
+    salida.textContent = "Conecta primero el patinete";
+    return;
+  }
+
+  const canales = [
+    {
+      nombre: "Nordic",
+      servicio: "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
+      caracteristica: "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+    },
+    {
+      nombre: "Ninebot 004",
+      servicio: "6e400001-0000-0000-006e-696e65626f74",
+      caracteristica: "6e400004-0000-0000-006e-696e65626f74"
+    },
+    {
+      nombre: "Ninebot 006",
+      servicio: "6e400001-0000-0000-006e-696e65626f74",
+      caracteristica: "6e400006-0000-0000-006e-696e65626f74"
+    }
+  ];
+
+  salida.style.whiteSpace = "pre-wrap";
+  salida.style.overflowWrap = "anywhere";
+  salida.textContent = "Iniciando escucha...\n";
+
+  for (const canal of canales) {
+    try {
+      const servicio =
+        await servidor.getPrimaryService(canal.servicio);
+
+      const caracteristica =
+        await servicio.getCharacteristic(canal.caracteristica);
+
+      caracteristica.addEventListener(
+        "characteristicvaluechanged",
+        evento => {
+          const datos = new Uint8Array(
+            evento.target.value.buffer,
+            evento.target.value.byteOffset,
+            evento.target.value.byteLength
+          );
+
+          const hex = Array.from(datos)
+            .map(x => x.toString(16).padStart(2, "0"))
+            .join(" ");
+
+          salida.textContent +=
+            "\n" + canal.nombre + ": " + hex;
+        }
+      );
+
+      await caracteristica.startNotifications();
+
+      salida.textContent +=
+        "\nEscuchando: " + canal.nombre;
+
+    } catch (error) {
+      salida.textContent +=
+        "\nError " + canal.nombre +
+        ": " + error.message;
+    }
   }
 }
 
