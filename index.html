@@ -350,33 +350,42 @@ footer {
 
   <h2>👑 SCOOTGANG PRO</h2>
 
-  <p class="muted">
-    Acceso exclusivo para administradores
-    y personal autorizado.
-  </p>
+  <form id="formPro" onsubmit="entrarPro(event)">
 
-  <input
-    class="input"
-    type="password"
-    placeholder="Contraseña"
-    disabled
-  >
+    <input
+      id="passwordPro"
+      class="input"
+      type="password"
+      placeholder="Contraseña"
+      autocomplete="current-password"
+      required
+    >
 
-  <button class="btn" disabled>
-    Entrar como administrador
-  </button>
+    <button
+      class="btn"
+      type="submit"
+      style="background:#ed2639; color:white;">
+      Entrar
+    </button>
 
-  <p class="muted">
-    Inicio de sesión pendiente de
-    implementar con autenticación segura.
-  </p>
+  </form>
 
-  <div class="proGrid">
+  <div id="sesionPro" class="hidden">
+    <p>✅ Acceso PRO autorizado</p>
+
+    <button class="btn secondary"
+      onclick="salirPro()">
+      Cerrar sesión
+    </button>
+  </div>
+
+  <p id="mensajePro" class="muted"></p>
 
 </section>
 
+
 <footer>
-  SCOOTGANG · Versión de desarrollo
+  SCOOTGANG · Versión en desarrollo
 </footer>
 
 </main>
