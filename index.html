@@ -954,6 +954,7 @@ async function entrarPro(event) {
 
   } catch (e) {
     mensajePro(e.message);
+    document.getElementById("mensajePro").style.color = "#ef4444";
   } finally {
     boton.disabled = false;
   }
@@ -967,6 +968,7 @@ async function salirPro() {
   document.getElementById("passwordPro").value = "";
 
   mensajePro("Sesión cerrada");
+  document.getElementById("mensajePro").style.color = "#9ca3af";
 }
 
 </script>
