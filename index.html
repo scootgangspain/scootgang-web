@@ -950,6 +950,7 @@ async function entrarPro(event) {
     document.getElementById("sesionPro").classList.remove("hidden");
 
     mensajePro("Sesión iniciada correctamente");
+    document.getElementById("mensajePro").style.color = "#22c55e";
 
   } catch (e) {
     mensajePro(e.message);
