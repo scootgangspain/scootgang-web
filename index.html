@@ -413,7 +413,7 @@ footer {
 
 <div class="proGrid" style="margin:20px 0;">
 
-  <div class="proCard">
+  <div class="proCard" onclick="abrirGestionMapas()">
     <svg class="proIcon" viewBox="0 0 24 24">
       <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/>
       <path d="M9 3v15M15 6v15"/>
@@ -721,6 +721,9 @@ async function escucharBluetooth() {
   }
 }
 
+function abrirGestionMapas() {
+  alert("SCOOTGANG PRO - Gestión de mapas");
+}
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 
