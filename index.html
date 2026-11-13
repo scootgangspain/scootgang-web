@@ -658,6 +658,66 @@ async function escucharBluetooth() {
     SUPABASE_URL,
     SUPABASE_KEY
   );
+  
+function mensajePro(texto) {
+  document.getElementById("mensajePro").textContent = texto;
+}
+
+async function entrarPro(event) {
+  event.preventDefault();
+
+  const password = document.getElementById("passwordPro").value;
+  const boton = document.querySelector("#formPro button");
+
+  boton.disabled = true;
+  mensajePro("Verificando acceso...");
+
+  try {
+    const { data, error } =
+      await dbScootGang.auth.signInWithPassword({
+        email: ADMIN_EMAIL,
+        password: password
+      });
+
+    if (error || !data.user) {
+      throw new Error("Credenciales incorrectas");
+    }
+
+    const { data: admin, error: errorAdmin } =
+      await dbScootGang
+        .from("scootgang_admins")
+        .select("user_id")
+        .eq("user_id", data.user.id)
+        .maybeSingle();
+
+    if (errorAdmin || !admin) {
+      await dbScootGang.auth.signOut();
+      throw new Error("Cuenta sin acceso PRO o error de permisos");
+    }
+
+    document.getElementById("passwordPro").value = "";
+    document.getElementById("formPro").classList.add("hidden");
+    document.getElementById("sesionPro").classList.remove("hidden");
+
+    mensajePro("Sesión iniciada correctamente");
+
+  } catch (e) {
+    mensajePro(e.message);
+  } finally {
+    boton.disabled = false;
+  }
+}
+
+async function salirPro() {
+  await dbScootGang.auth.signOut();
+
+  document.getElementById("sesionPro").classList.add("hidden");
+  document.getElementById("formPro").classList.remove("hidden");
+  document.getElementById("passwordPro").value = "";
+
+  mensajePro("Sesión cerrada");
+}
+
 </script>
 
 </body>
