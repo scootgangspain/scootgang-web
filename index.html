@@ -722,7 +722,51 @@ async function escucharBluetooth() {
 }
 
 function abrirGestionMapas() {
-  alert("SCOOTGANG PRO - Gestión de mapas");
+  const ventana = window.open("", "_blank");
+
+  if (!ventana) {
+    alert("Permite las ventanas emergentes para abrir Gestión de mapas.");
+    return;
+  }
+
+  ventana.document.write(`
+    <!DOCTYPE html>
+    <html lang="es">
+    <head>
+      <meta name="viewport" content="width=device-width, initial-scale=1">
+      <title>SCOOTGANG - Gestión de mapas</title>
+      <style>
+        body {
+          margin: 0;
+          padding: 25px;
+          background: #090909;
+          color: white;
+          font-family: Arial, sans-serif;
+        }
+        h1 {
+          color: #ed2639;
+          text-align: center;
+        }
+        .panel {
+          background: #171717;
+          border: 1px solid #ed2639;
+          border-radius: 16px;
+          padding: 20px;
+          margin-top: 25px;
+        }
+      </style>
+    </head>
+    <body>
+      <h1>SCOOTGANG PRO</h1>
+      <div class="panel">
+        <h2>Gestión de mapas</h2>
+        <p>Panel de gestión</p>
+      </div>
+    </body>
+    </html>
+  `);
+
+  ventana.document.close();
 }
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
