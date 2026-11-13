@@ -423,13 +423,29 @@ footer {
 
 <div class="proGrid" style="margin:20px 0;">
 
-  <div class="proCard">
+  <div class="proCard" onclick="mostrarVersiones()">
     <svg class="proIcon" viewBox="0 0 24 24">
       <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/>
       <path d="M9 3v15M15 6v15"/>
     </svg>
     <span>Versiones MCU VCU</span>
   </div>
+
+<div id="panelVersiones" style="display:none; grid-column:1/-1; background:#101010; border:1px solid #ed2639; border-radius:16px; padding:20px; color:white;">
+
+  <h3 style="color:#ed2639; margin-top:0;">
+    Versiones MCU / VCU
+  </h3>
+
+  <p>MCU: <strong id="versionMCU">Sin detectar</strong></p>
+
+  <p>VCU: <strong id="versionVCU">Sin detectar</strong></p>
+
+  <p style="color:#999; font-size:13px;">
+    Conecta un patinete para consultar las versiones.
+  </p>
+
+</div>
 
   <div class="proCard">
     <svg class="proIcon" viewBox="0 0 24 24">
