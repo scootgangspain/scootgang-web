@@ -505,7 +505,30 @@ function estadoConexion(texto, conectado = false) {
 
 function desconectado() {
   servidor = null;
+  actualizarEstadoMapas();
   estadoConexion("Bluetooth desconectado");
+}
+
+function actualizarEstadoMapas() {
+  const conectado = Boolean(servidor?.connected);
+
+  const mapa1 = document.getElementById("mapaOriginal");
+  const mapa2 = document.getElementById("mapaDeportivo");
+  const estado1 = document.getElementById("estadoMapa1");
+  const estado2 = document.getElementById("estadoMapa2");
+  const mensaje = document.getElementById("mensajeMapas");
+
+  mapa1?.classList.remove("mapaActivo");
+  mapa2?.classList.remove("mapaActivo");
+
+  if (estado1) estado1.textContent = "No disponible";
+  if (estado2) estado2.textContent = "No disponible";
+
+  if (mensaje) {
+    mensaje.textContent = conectado
+      ? "Patinete conectado. Pendiente de identificar los mapas compatibles y el mapa activo."
+      : "Conecta un patinete para comprobar los mapas disponibles.";
+  }
 }
 
 async function conectar() {
@@ -541,7 +564,7 @@ async function conectar() {
     }
 
     servidor = await dispositivo.gatt.connect();
-
+actualizarEstadoMapas();
     estadoConexion(
       "✅ Conectado: " +
       (dispositivo.name || "Patinete"),
