@@ -212,6 +212,36 @@ footer {
   font-size: 11px;
   margin-top: 20px;
 }
+  
+.proGrid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  gap: 12px;
+}
+
+.proCard {
+  background: #222227;
+  border: 1px solid #393940;
+  border-radius: 15px;
+  min-height: 125px;
+  padding: 18px 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 15px;
+  text-align: center;
+  color: white;
+  font-size: 14px;
+  font-weight: 600;
+}
+
+.proIcon {
+  color: #ed2639;
+  font-size: 34px;
+  line-height: 1;
+}
+
 </style>
 </head>
 
@@ -371,7 +401,31 @@ footer {
   </form>
 
   <div id="sesionPro" class="hidden">
-    <p>✅ Acceso PRO autorizado</p>
+    <p>✅Acceso PRO autorizado✅</p>
+
+<div class="proGrid" style="margin:20px 0;">
+
+  <div class="proCard">
+    <span class="proIcon">🗺</span>
+    <span>Gestión de mapas</span>
+  </div>
+
+  <div class="proCard">
+    <span class="proIcon">◉</span>
+    <span>Funciones ocultas</span>
+  </div>
+
+  <div class="proCard">
+    <span class="proIcon">⌕</span>
+    <span>Diagnóstico avanzado</span>
+  </div>
+
+  <div class="proCard">
+    <span class="proIcon">⚙</span>
+    <span>Modificar parámetros</span>
+  </div>
+
+</div>
 
     <button class="btn secondary"
       onclick="salirPro()">
