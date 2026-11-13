@@ -634,6 +634,22 @@ async function escucharBluetooth() {
 }
 
 </script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+<script>
+  // SCOOTGANG PRO - Autenticación
+
+  const SUPABASE_URL = "https://ycbpshgyhdqpmpawckfz.supabase.co";
+
+  const SUPABASE_KEY = "sb_publishable_TweKJdyVWMlGGU77gGmQnQ_kKzSvCae";
+
+  const ADMIN_EMAIL = "scootgangspain@gmail.com";
+
+  const dbScootGang = supabase.createClient(
+    SUPABASE_URL,
+    SUPABASE_KEY
+  );
+</script>
 
 </body>
 </html>
