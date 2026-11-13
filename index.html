@@ -447,7 +447,7 @@ footer {
 
 </div>
 
-  <div class="proCard">
+  <div class="proCard" onclick="mostrarFuncionesOcultas()">
     <svg class="proIcon" viewBox="0 0 24 24">
       <path d="M3 3l18 18"/>
       <path d="M10.6 5.1A11 11 0 0 1 12 5c5 0 9 4 10 7a12 12 0 0 1-4 5"/>
@@ -455,6 +455,26 @@ footer {
     </svg>
     <span>Funciones ocultas</span>
   </div>
+
+<div id="panelFuncionesOcultas"
+     style="display:none; grid-column:1/-1; background:#101010; border:1px solid #ed2639; border-radius:16px; padding:20px; color:white;">
+
+  <h3 style="color:#ed2639; margin-top:0;">
+    Funciones ocultas
+  </h3>
+
+  <p style="color:#aaa; font-size:14px;">
+    Opciones avanzadas del patinete
+  </p>
+
+  <div style="background:#1d1d1d; padding:15px; border-radius:12px; margin-top:15px;">
+    <strong>Funciones disponibles</strong>
+    <p style="color:#999; margin-bottom:0;">
+      Pendiente de detectar el modelo y sus funciones compatibles.
+    </p>
+  </div>
+
+</div>
 
   <div class="proCard">
     <svg class="proIcon" viewBox="0 0 24 24">
@@ -782,6 +802,15 @@ async function escucharBluetooth() {
 
 function mostrarVersiones() {
   const panel = document.getElementById("panelVersiones");
+
+  if (!panel) return;
+
+  panel.style.display =
+    panel.style.display === "none" ? "block" : "none";
+}
+
+function mostrarFuncionesOcultas() {
+  const panel = document.getElementById("panelFuncionesOcultas");
 
   if (!panel) return;
 
