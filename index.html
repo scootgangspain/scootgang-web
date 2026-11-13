@@ -219,28 +219,35 @@ footer {
   gap: 12px;
 }
 
+
 .proCard {
-  background: #222227;
-  border: 1px solid #393940;
-  border-radius: 15px;
-  min-height: 125px;
-  padding: 18px 10px;
+  background: #050505;
+  border: 1px solid #303035;
+  border-radius: 20px;
+  min-height: 140px;
+  padding: 20px 10px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
-  gap: 15px;
+  gap: 20px;
   text-align: center;
-  color: white;
+  color: #ffffff;
   font-size: 14px;
-  font-weight: 600;
+  font-weight: 700;
 }
 
 .proIcon {
-  color: #ed2639;
-  font-size: 34px;
-  line-height: 1;
+  width: 36px;
+  height: 36px;
+  fill: none;
+  stroke: #ed2639;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  flex-shrink: 0;
 }
+
 
 </style>
 </head>
@@ -403,29 +410,47 @@ footer {
   <div id="sesionPro" class="hidden">
     <p>✅Acceso PRO autorizado✅</p>
 
+
 <div class="proGrid" style="margin:20px 0;">
 
   <div class="proCard">
-    <span class="proIcon">🗺</span>
+    <svg class="proIcon" viewBox="0 0 24 24">
+      <path d="M3 6l6-3 6 3 6-3v15l-6 3-6-3-6 3z"/>
+      <path d="M9 3v15M15 6v15"/>
+    </svg>
     <span>Gestión de mapas</span>
   </div>
 
   <div class="proCard">
-    <span class="proIcon">◉</span>
+    <svg class="proIcon" viewBox="0 0 24 24">
+      <path d="M3 3l18 18"/>
+      <path d="M10.6 5.1A11 11 0 0 1 12 5c5 0 9 4 10 7a12 12 0 0 1-4 5"/>
+      <path d="M6.5 6.5C4 8 2.5 10 2 12c1 3 5 7 10 7 1.5 0 3-.3 4.2-1"/>
+    </svg>
     <span>Funciones ocultas</span>
   </div>
 
   <div class="proCard">
-    <span class="proIcon">⌕</span>
+    <svg class="proIcon" viewBox="0 0 24 24">
+      <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
+      <path d="M16 3h3a2 2 0 0 1 2 2v3"/>
+      <path d="M3 16v3a2 2 0 0 0 2 2h3"/>
+      <path d="M21 16v3a2 2 0 0 1-2 2h-3"/>
+      <path d="M9 12h6"/>
+    </svg>
     <span>Diagnóstico avanzado</span>
   </div>
 
   <div class="proCard">
-    <span class="proIcon">⚙</span>
+    <svg class="proIcon" viewBox="0 0 24 24">
+      <path d="M4 5h16M4 12h16M4 19h16"/>
+      <path d="M9 2v6M15 9v6M9 16v6"/>
+    </svg>
     <span>Modificar parámetros</span>
   </div>
 
 </div>
+
 
     <button class="btn secondary"
       onclick="salirPro()">
