@@ -770,6 +770,14 @@ async function escucharBluetooth() {
   }
 }
 
+function mostrarVersiones() {
+  const panel = document.getElementById("panelVersiones");
+
+  if (!panel) return;
+
+  panel.style.display =
+    panel.style.display === "none" ? "block" : "none";
+}
 
 </script>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
