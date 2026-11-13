@@ -522,6 +522,11 @@ function estadoConexion(texto, conectado = false) {
 function desconectado() {
   servidor = null;
   actualizarEstadoMapas();
+  const mcu = document.getElementById("versionMCU");
+const vcu = document.getElementById("versionVCU");
+
+if (mcu) mcu.textContent = "Sin detectar";
+if (vcu) vcu.textContent = "Sin detectar";
   estadoConexion("Bluetooth desconectado");
 }
 
@@ -581,6 +586,11 @@ async function conectar() {
 
     servidor = await dispositivo.gatt.connect();
 actualizarEstadoMapas();
+document.getElementById("versionMCU").textContent =
+  "Pendiente de lectura";
+
+document.getElementById("versionVCU").textContent =
+  "Pendiente de lectura";
     estadoConexion(
       "✅ Conectado: " +
       (dispositivo.name || "Patinete"),
