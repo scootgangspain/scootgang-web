@@ -476,7 +476,7 @@ footer {
 
 </div>
 
-  <div class="proCard">
+  <div class="proCard" onclick="mostrarDiagnosticoAvanzado()">
     <svg class="proIcon" viewBox="0 0 24 24">
       <path d="M8 3H5a2 2 0 0 0-2 2v3"/>
       <path d="M16 3h3a2 2 0 0 1 2 2v3"/>
@@ -486,6 +486,36 @@ footer {
     </svg>
     <span>Diagnóstico avanzado</span>
   </div>
+
+<div id="panelDiagnosticoAvanzado"
+     style="display:none; grid-column:1/-1; background:#101010; border:1px solid #ed2639; border-radius:16px; padding:20px; color:white;">
+
+  <h3 style="color:#ed2639; margin-top:0;">
+    Diagnóstico avanzado
+  </h3>
+
+  <div style="background:#1d1d1d; padding:15px; border-radius:12px; margin-bottom:12px;">
+    <strong>Estado de conexión</strong>
+    <p id="diagnosticoConexion" style="color:#aaa;">
+      Desconectado
+    </p>
+  </div>
+
+  <div style="background:#1d1d1d; padding:15px; border-radius:12px; margin-bottom:12px;">
+    <strong>Servicios Bluetooth</strong>
+    <p style="color:#aaa;">
+      Pendiente de análisis
+    </p>
+  </div>
+
+  <div style="background:#1d1d1d; padding:15px; border-radius:12px;">
+    <strong>Códigos de error</strong>
+    <p style="color:#aaa;">
+      Pendiente de lectura
+    </p>
+  </div>
+
+</div>
 
   <div class="proCard">
     <svg class="proIcon" viewBox="0 0 24 24">
@@ -816,6 +846,23 @@ function mostrarFuncionesOcultas() {
 
   panel.style.display =
     panel.style.display === "none" ? "block" : "none";
+}
+
+function mostrarDiagnosticoAvanzado() {
+  const panel = document.getElementById("panelDiagnosticoAvanzado");
+
+  if (!panel) return;
+
+  panel.style.display =
+    panel.style.display === "none" ? "block" : "none";
+
+  const conexion = document.getElementById("diagnosticoConexion");
+
+  if (conexion) {
+    conexion.textContent = servidor?.connected
+      ? "Bluetooth conectado"
+      : "Desconectado";
+  }
 }
 
 </script>
