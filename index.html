@@ -633,10 +633,13 @@ async function conectar() {
 
     estado().textContent = "Buscando patinete...";
 
-    dispositivo =
-      await navigator.bluetooth.requestDevice({
-        acceptAllDevices: true
-      });
+    
+dispositivo =
+await navigator.bluetooth.requestDevice({
+  acceptAllDevices: true,
+  optionalServices: [SCOOTGANG_BLE.SERVICE]
+});
+
 
     document.getElementById("nombre").textContent =
       dispositivo.name || "Patinete sin nombre";
@@ -653,6 +656,24 @@ async function conectar() {
     }
 
     servidor = await dispositivo.gatt.connect();
+    
+scootgangDevice = dispositivo;
+scootgangServer = servidor;
+
+scootgangService = await servidor.getPrimaryService(
+  SCOOTGANG_BLE.SERVICE
+);
+
+scootgangRX = await scootgangService.getCharacteristic(
+  SCOOTGANG_BLE.RX
+);
+
+scootgangTX = await scootgangService.getCharacteristic(
+  SCOOTGANG_BLE.TX
+);
+
+await escucharScootgangBluetooth();
+
 actualizarEstadoMapas();
 document.getElementById("versionMCU").textContent =
   "Pendiente de lectura";
