@@ -971,6 +971,97 @@ async function salirPro() {
   document.getElementById("mensajePro").style.color = "#9ca3af";
 }
 
+const SCOOTGANG_BLE = {
+  SERVICE: "6e400001-b5a3-f393-e0a9-e50e24dcca9e",
+  RX: "6e400002-b5a3-f393-e0a9-e50e24dcca9e",
+  TX: "6e400003-b5a3-f393-e0a9-e50e24dcca9e"
+};
+
+let scootgangDevice = null;
+let scootgangServer = null;
+let scootgangService = null;
+let scootgangRX = null;
+let scootgangTX = null;
+
+function scootgangDesconectado() {
+  scootgangServer = null;
+  scootgangService = null;
+  scootgangRX = null;
+  scootgangTX = null;
+  console.log("SCOOTGANG: Bluetooth desconectado");
+}
+
+async function conectarScootgangBluetooth() {
+  try {
+    if (!navigator.bluetooth) {
+      alert("Bluetooth no disponible. Utiliza Chrome o Edge.");
+      return;
+    }
+
+    scootgangDevice = await navigator.bluetooth.requestDevice({
+      acceptAllDevices: true,
+      optionalServices: [SCOOTGANG_BLE.SERVICE]
+    });
+
+    scootgangDevice.addEventListener(
+      "gattserverdisconnected",
+      scootgangDesconectado
+    );
+
+    scootgangServer = await scootgangDevice.gatt.connect();
+
+    scootgangService = await scootgangServer.getPrimaryService(
+      SCOOTGANG_BLE.SERVICE
+    );
+
+    scootgangRX = await scootgangService.getCharacteristic(
+      SCOOTGANG_BLE.RX
+    );
+
+    scootgangTX = await scootgangService.getCharacteristic(
+      SCOOTGANG_BLE.TX
+    );
+
+    console.log(
+      "SCOOTGANG: Bluetooth conectado a",
+      scootgangDevice.name
+    );
+
+  } catch (error) {
+    console.error("SCOOTGANG: Error Bluetooth", error);
+  }
+}
+
+async function escucharScootgangBluetooth() {
+  if (!scootgangTX) {
+    console.log("SCOOTGANG: No hay conexión Bluetooth");
+    return;
+  }
+
+  await scootgangTX.startNotifications();
+
+  scootgangTX.addEventListener(
+    "characteristicvaluechanged",
+    (event) => {
+      const valor = event.target.value;
+
+      const datos = new Uint8Array(
+        valor.buffer,
+        valor.byteOffset,
+        valor.byteLength
+      );
+
+      const hexadecimal = Array.from(datos)
+        .map(byte => byte.toString(16).padStart(2, "0"))
+        .join(" ");
+
+      console.log("SCOOTGANG RX:", hexadecimal);
+    }
+  );
+
+  console.log("SCOOTGANG: Escucha Bluetooth activada");
+}
+
 </script>
 
 </body>
