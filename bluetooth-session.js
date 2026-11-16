@@ -95,6 +95,34 @@ xorBlocks(blockA, blockB) {
   return result;
 }
 
+parseFrame(bytes) {
+  if (!(bytes instanceof Uint8Array)) {
+    throw new Error("El paquete debe ser Uint8Array");
+  }
+
+  if (
+    bytes.length < 7 ||
+    bytes[0] !== 0x5A ||
+    bytes[1] !== 0xA5
+  ) {
+    return null;
+  }
+
+  const length = bytes[2];
+
+  if (bytes.length !== 7 + length) {
+    return null;
+  }
+
+  return {
+    src: bytes[3],
+    dst: bytes[4],
+    cmd: bytes[5],
+    arg: bytes[6],
+    data: bytes.slice(7)
+  };
+}
+
   reset() {
     this.device = null;
     this.paired = false;
