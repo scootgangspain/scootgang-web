@@ -184,8 +184,8 @@ for (let i = 0; i < payload.length; i++) {
   result.set(frame.slice(0, 3), 0);
   result.set(encrypted, 3);
 
-result[3 + encrypted.length] = checksum & 255;
-result[3 + encrypted.length + 1] = (checksum >>> 8) & 255;
+result[3 + encrypted.length + 2] = checksum & 255;
+result[3 + encrypted.length + 3] = (checksum >>> 8) & 255;
 
   return result;
 }
