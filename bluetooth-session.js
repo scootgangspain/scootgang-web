@@ -76,6 +76,25 @@ async aesBlock(keyBytes, dataBytes) {
   return new Uint8Array(encrypted).slice(0, 16);
 }
 
+xorBlocks(blockA, blockB) {
+  if (
+    !(blockA instanceof Uint8Array) ||
+    !(blockB instanceof Uint8Array) ||
+    blockA.length !== 16 ||
+    blockB.length !== 16
+  ) {
+    throw new Error("XOR requiere dos bloques de 16 bytes");
+  }
+
+  const result = new Uint8Array(16);
+
+  for (let i = 0; i < 16; i++) {
+    result[i] = blockA[i] ^ blockB[i];
+  }
+
+  return result;
+}
+
   reset() {
     this.device = null;
     this.paired = false;
