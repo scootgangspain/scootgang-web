@@ -123,6 +123,22 @@ parseFrame(bytes) {
   };
 }
 
+async startPairing() {
+  if (!this.device?.gatt?.connected) {
+    throw new Error("El patinete no está conectado por Bluetooth");
+  }
+
+  this.paired = false;
+  this.initialKeyReceived = false;
+  this.recalcReceived = false;
+  this.confirmReceived = false;
+  this.messageCounter = 0;
+
+  this.setPhase("pairing-initializing");
+
+  console.log("SCOOTGANG: Preparando emparejamiento seguro");
+}
+
   reset() {
     this.device = null;
     this.paired = false;
