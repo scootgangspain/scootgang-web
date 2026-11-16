@@ -144,6 +144,52 @@ async createInitialKey(deviceName) {
   return this.deriveKey(nameBytes, protocolKey);
 }
 
+async encryptInitialFrame(frame, deviceName) {
+  if (
+    !(frame instanceof Uint8Array) ||
+    frame.length < 3 ||
+    frame[0] !== 0x5A ||
+    frame[1] !== 0xA5
+  ) {
+    throw new Error("Paquete inicial no válido");
+  }
+
+  const protocolKey = Uint8Array.of(
+    151, 207, 184, 2, 132, 65, 67, 222,
+    86, 0, 43, 59, 52, 120, 10, 93
+  );
+
+  const initialKey = await this.createInitialKey(deviceName);
+  const mask = await this.aesBlock(initialKey, protocolKey);
+
+  const payload = frame.slice(3);
+  const encrypted = new Uint8Array(payload.length);
+
+  
+let checksum = 0;
+
+for (const byte of frame) {
+  checksum = (checksum + byte) & 0xFFFF;
+}
+
+checksum = (checksum ^ 0xFFFF) & 0xFFFF;
+
+for (let i = 0; i < payload.length; i++) {
+  encrypted[i] = payload[i] ^ mask[i % 16];
+}
+
+
+  const result = new Uint8Array(3 + encrypted.length + 6);
+
+  result.set(frame.slice(0, 3), 0);
+  result.set(encrypted, 3);
+
+  result[3 + encrypted.length + 2] = checksum & 255;
+  result[3 + encrypted.length + 3] = (checksum >>> 8) & 255;
+
+  return result;
+}
+
 buildInitialKeyRequest(deviceName) {
   if (typeof deviceName !== "string") {
     throw new Error("Nombre Bluetooth no válido");
