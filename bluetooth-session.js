@@ -24,6 +24,28 @@ this.messageCounter = 0;
     };
   }
 
+async deriveKey(dataA, dataB) {
+  if (
+    !(dataA instanceof Uint8Array) ||
+    !(dataB instanceof Uint8Array) ||
+    dataA.length !== 16 ||
+    dataB.length !== 16
+  ) {
+    throw new Error("Las claves deben contener 16 bytes");
+  }
+
+  const combined = new Uint8Array(32);
+  combined.set(dataA, 0);
+  combined.set(dataB, 16);
+
+  const hash = await crypto.subtle.digest(
+    "SHA-1",
+    combined
+  );
+
+  return new Uint8Array(hash).slice(0, 16);
+}
+
   reset() {
     this.device = null;
     this.paired = false;
