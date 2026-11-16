@@ -124,6 +124,26 @@ parseFrame(bytes) {
 }
 
 
+async createInitialKey(deviceName) {
+  if (typeof deviceName !== "string" || !deviceName) {
+    throw new Error("Nombre Bluetooth no válido");
+  }
+
+  const protocolKey = Uint8Array.of(
+    151, 207, 184, 2,
+    132, 65, 67, 222,
+    86, 0, 43, 59,
+    52, 120, 10, 93
+  );
+
+  const encodedName = new TextEncoder().encode(deviceName);
+  const nameBytes = new Uint8Array(16);
+
+  nameBytes.set(encodedName.slice(0, 16));
+
+  return this.deriveKey(nameBytes, protocolKey);
+}
+
 buildInitialKeyRequest(deviceName) {
   if (typeof deviceName !== "string") {
     throw new Error("Nombre Bluetooth no válido");
