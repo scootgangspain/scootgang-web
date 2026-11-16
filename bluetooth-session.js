@@ -168,7 +168,7 @@ async encryptInitialFrame(frame, deviceName) {
   
 let checksum = 0;
 
-for (const byte of frame) {
+for (const byte of payload) {
   checksum = (checksum + byte) & 0xFFFF;
 }
 
@@ -191,24 +191,30 @@ result[3 + encrypted.length + 3] = (checksum >>> 8) & 255;
 }
 
 buildInitialKeyRequest(deviceName) {
-  if (typeof deviceName !== "string") {
+  if (typeof deviceName !== "string" || !deviceName) {
     throw new Error("Nombre Bluetooth no válido");
   }
 
-  const prefixes = ["1CG", "1K1", "1EF"];
-  const compatible = prefixes.some(prefix =>
-    deviceName.startsWith(prefix)
+  const destinos = {
+    "1K1": 4
+  };
+
+  const prefijo = Object.keys(destinos).find(p =>
+    deviceName.startsWith(p)
   );
+
+  if (!prefijo) {
+    throw new Error("Protocolo de emparejamiento no verificado para este modelo");
+  }
 
   return Uint8Array.of(
     0x5A, 0xA5, 0x00,
     0x3E,
-    compatible ? 1 : 0,
+    destinos[prefijo],
     0x5B,
     0x00
   );
 }
-
 
 async startPairing() {
   if (!this.device?.gatt?.connected) {
