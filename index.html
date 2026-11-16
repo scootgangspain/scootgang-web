@@ -601,7 +601,8 @@ function estadoConexion(texto, conectado = false) {
 }
 
 function desconectado() {
-  
+  window.scootgangSession.reset();
+
 if (window.inicioConexion !== null) {
   const segundos = Math.round(
     (Date.now() - window.inicioConexion) / 1000
@@ -689,6 +690,9 @@ await navigator.bluetooth.requestDevice({
     servidor = await dispositivo.gatt.connect();
     window.inicioConexion = Date.now();
     
+window.scootgangSession.device = dispositivo;
+window.scootgangSession.setPhase("ble-connected");
+
 scootgangDevice = dispositivo;
 scootgangServer = servidor;
 
