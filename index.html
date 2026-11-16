@@ -578,6 +578,19 @@ function mostrarPro() {
 
 function estadoConexion(texto, conectado = false) {
 
+  if (texto === "Esperando autorización") {
+    document.getElementById("conexion").textContent =
+      "Autorizando...";
+
+    document.getElementById("estadoCorto").textContent =
+      "Esperando autorización";
+
+    estado().textContent =
+      "Pulse una vez el botón de encendido del patinete";
+
+    return;
+  }
+
   document.getElementById("conexion").textContent =
     conectado ? "Conectado" : "Sin conectar";
 
