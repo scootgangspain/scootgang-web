@@ -123,23 +123,26 @@ parseFrame(bytes) {
   };
 }
 
-buildInitialKeyRequest(nameBytes) {
-  if (!(nameBytes instanceof Uint8Array)) {
-    throw new Error("El nombre debe estar codificado en bytes");
+
+buildInitialKeyRequest(deviceName) {
+  if (typeof deviceName !== "string") {
+    throw new Error("Nombre Bluetooth no válido");
   }
 
-  if (nameBytes.length < 1) {
-    throw new Error("Falta el identificador del dispositivo");
-  }
+  const prefixes = ["1CG", "1K1", "1EF"];
+  const compatible = prefixes.some(prefix =>
+    deviceName.startsWith(prefix)
+  );
 
   return Uint8Array.of(
     0x5A, 0xA5, 0x00,
     0x3E,
-    nameBytes[0],
+    compatible ? 1 : 0,
     0x5B,
     0x00
   );
 }
+
 
 async startPairing() {
   if (!this.device?.gatt?.connected) {
