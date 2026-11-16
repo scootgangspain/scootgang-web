@@ -1095,6 +1095,7 @@ async function escucharScootgangBluetooth() {
     return;
   }
 
+let bufferBluetooth = new Uint8Array(0);
   await scootgangTX.startNotifications();
 
   scootgangTX.addEventListener(
@@ -1102,11 +1103,61 @@ async function escucharScootgangBluetooth() {
     (event) => {
       const valor = event.target.value;
 
-      const datos = new Uint8Array(
-        valor.buffer,
-        valor.byteOffset,
-        valor.byteLength
-      );
+      
+const datos = new Uint8Array(
+  valor.buffer,
+  valor.byteOffset,
+  valor.byteLength
+).slice();
+
+const nuevoBuffer = new Uint8Array(
+  bufferBluetooth.length + datos.length
+);
+
+nuevoBuffer.set(bufferBluetooth, 0);
+nuevoBuffer.set(datos, bufferBluetooth.length);
+
+bufferBluetooth = nuevoBuffer;
+
+if (bufferBluetooth.length > 4096) {
+  console.warn("SCOOTGANG: Búfer Bluetooth reiniciado por exceso de datos");
+  bufferBluetooth = new Uint8Array(0);
+}
+
+while (bufferBluetooth.length >= 3) {
+  let inicio = -1;
+
+  for (let i = 0; i < bufferBluetooth.length - 1; i++) {
+    if (
+      bufferBluetooth[i] === 0x5A &&
+      bufferBluetooth[i + 1] === 0xA5
+    ) {
+      inicio = i;
+      break;
+    }
+  }
+
+  if (inicio === -1) {
+    bufferBluetooth = bufferBluetooth.slice(-1);
+    break;
+  }
+
+  if (inicio > 0) {
+    bufferBluetooth = bufferBluetooth.slice(inicio);
+  }
+
+  if (bufferBluetooth.length < 3) break;
+
+  const longitudTotal = 3 + bufferBluetooth[2] + 10;
+
+  if (bufferBluetooth.length < longitudTotal) break;
+
+  const paquete = bufferBluetooth.slice(0, longitudTotal);
+  bufferBluetooth = bufferBluetooth.slice(longitudTotal);
+
+  console.log("SCOOTGANG PAQUETE:", paquete);
+}
+
 
       const hexadecimal = Array.from(datos)
         .map(byte => byte.toString(16).padStart(2, "0"))
