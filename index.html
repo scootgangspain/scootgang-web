@@ -588,6 +588,21 @@ function estadoConexion(texto, conectado = false) {
 }
 
 function desconectado() {
+  
+if (window.inicioConexion !== null) {
+  const segundos = Math.round(
+    (Date.now() - window.inicioConexion) / 1000
+  );
+
+  console.log(
+    "SCOOTGANG: Conexión perdida después de",
+    segundos,
+    "segundos"
+  );
+
+  window.inicioConexion = null;
+}
+
   servidor = null;
   actualizarEstadoMapas();
   const mcu = document.getElementById("versionMCU");
@@ -631,6 +646,9 @@ async function conectar() {
 
   try {
 
+window.inicioConexion = null;
+console.log("SCOOTGANG: Iniciando conexión Bluetooth");
+
     estado().textContent = "Buscando patinete...";
 
     
@@ -656,6 +674,7 @@ await navigator.bluetooth.requestDevice({
     }
 
     servidor = await dispositivo.gatt.connect();
+    window.inicioConexion = Date.now();
     
 scootgangDevice = dispositivo;
 scootgangServer = servidor;
