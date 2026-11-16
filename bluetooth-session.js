@@ -123,6 +123,24 @@ parseFrame(bytes) {
   };
 }
 
+buildInitialKeyRequest(nameBytes) {
+  if (!(nameBytes instanceof Uint8Array)) {
+    throw new Error("El nombre debe estar codificado en bytes");
+  }
+
+  if (nameBytes.length < 1) {
+    throw new Error("Falta el identificador del dispositivo");
+  }
+
+  return Uint8Array.of(
+    0x5A, 0xA5, 0x00,
+    0x3E,
+    nameBytes[0],
+    0x5B,
+    0x00
+  );
+}
+
 async startPairing() {
   if (!this.device?.gatt?.connected) {
     throw new Error("El patinete no está conectado por Bluetooth");
