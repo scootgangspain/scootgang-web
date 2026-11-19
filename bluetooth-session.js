@@ -291,6 +291,36 @@ async prepareAppPairing() {
   );
 }
 
+buildAppPairingRequest() {
+  if (
+    !this.initialKeyReceived ||
+    !(this.appData instanceof Uint8Array) ||
+    this.appData.length !== 16
+  ) {
+    throw new Error("Datos de emparejamiento no preparados");
+  }
+
+  if (!Number.isInteger(this.peerAddr) ||
+      this.peerAddr < 0 ||
+      this.peerAddr > 255) {
+    throw new Error("Dirección Bluetooth no válida");
+  }
+
+  const frame = new Uint8Array(23);
+
+  frame.set([
+    0x5A, 0xA5, 0x10,
+    0x3E,
+    this.peerAddr,
+    0x5C,
+    0x00
+  ], 0);
+
+  frame.set(this.appData, 7);
+
+  return frame;
+}
+
 buildInitialKeyRequest(deviceName) {
   if (typeof deviceName !== "string" || !deviceName) {
     throw new Error("Nombre Bluetooth no válido");
