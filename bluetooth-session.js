@@ -234,6 +234,38 @@ async decryptInitialFrame(frame, deviceName) {
   return decrypted;
 }
 
+processInitialResponse(decrypted) {
+  if (
+    !(decrypted instanceof Uint8Array) ||
+    decrypted.length < 37 ||
+    decrypted[0] !== 0x5A ||
+    decrypted[1] !== 0xA5 ||
+    decrypted[2] !== 30 ||
+    decrypted[4] !== 62 ||
+    decrypted[5] !== 91 ||
+    decrypted[6] !== 1
+  ) {
+    throw new Error("Respuesta inicial de emparejamiento no válida");
+  }
+
+  const bleData = decrypted.slice(7, 23);
+  const initialKeyTail = decrypted.slice(23, 37);
+
+  this.peerAddr = decrypted[3];
+  this.bleData = bleData;
+  this.initialKeyTail = initialKeyTail;
+  this.initialKeyReceived = true;
+
+  console.log(
+    "SCOOTGANG: Respuesta inicial procesada"
+  );
+
+  return {
+    peerAddr: this.peerAddr,
+    initialKeyReceived: this.initialKeyReceived
+  };
+}
+
 buildInitialKeyRequest(deviceName) {
   if (typeof deviceName !== "string" || !deviceName) {
     throw new Error("Nombre Bluetooth no válido");
