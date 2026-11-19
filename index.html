@@ -1160,6 +1160,30 @@ while (bufferBluetooth.length >= 3) {
   
 if (window.scootgangSession) {
   window.scootgangSession.lastEncryptedFrame = paquete.slice();
+  
+if (
+  window.scootgangSession.phase === "awaiting-initial-key" &&
+  !window.scootgangSession.initialKeyReceived
+) {
+  const sesion = window.scootgangSession;
+
+  sesion.decryptInitialFrame(paquete, sesion.device.name)
+    .then(respuesta => {
+      sesion.processInitialResponse(respuesta);
+      sesion.setPhase("initial-key-received");
+
+      console.log(
+        "SCOOTGANG: Primera fase de emparejamiento completada"
+      );
+    })
+    .catch(error => {
+      console.error(
+        "SCOOTGANG: Error procesando respuesta inicial",
+        error
+      );
+    });
+}
+
 }
 
 }
