@@ -526,7 +526,11 @@ async startPairing() {
   this.messageCounter = 0;
   this.bleData = null;
   this.initialKeyTail = null;
-
+  
+this.activeKey = null;
+this.appData = null;
+this.peerAddr = null;
+  
   this.setPhase("pairing-initializing");
 
   try {
