@@ -351,6 +351,6 @@ async startPairing() {
     throw error;
   }
 }
-
+}
 
 window.scootgangSession = new ScootgangBluetoothSession();
