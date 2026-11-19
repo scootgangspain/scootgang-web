@@ -270,6 +270,36 @@ async computeMac(frame, counter) {
   return mac.slice(0, 4);
 }
 
+async buildEncryptedAppPairingFrame() {
+  const frame = this.buildAppPairingRequest();
+
+  if (!(this.activeKey instanceof Uint8Array)) {
+    throw new Error("Primero prepara la clave activa");
+  }
+
+  // El mensaje inicial 0x5B utiliza el contador 1.
+  // El siguiente mensaje saliente utiliza el 2.
+  const counter = 2;
+
+  const mac = await this.computeMac(frame, counter);
+
+  const encryptedPayload = await this.cryptoNext(
+    frame.slice(3),
+    counter
+  );
+
+  const result = new Uint8Array(frame.length + 6);
+
+  result.set(frame.slice(0, 3), 0);
+  result.set(encryptedPayload, 3);
+  result.set(mac, frame.length);
+
+  result[frame.length + 4] = (counter >>> 8) & 0xFF;
+  result[frame.length + 5] = counter & 0xFF;
+
+  return result;
+}
+
 async encryptInitialFrame(frame, deviceName) {
   if (
     !(frame instanceof Uint8Array) ||
