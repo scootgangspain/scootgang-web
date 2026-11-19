@@ -503,6 +503,35 @@ buildInitialKeyRequest(deviceName) {
   );
 }
 
+async sendAppPairingRequest() {
+  if (this.phase !== "pairing-app-key-ready") {
+    throw new Error("La fase 0x5B no está preparada");
+  }
+
+  if (!this.device?.gatt?.connected) {
+    throw new Error("El patinete no está conectado");
+  }
+
+  const frame = await this.buildEncryptedAppPairingFrame();
+
+  if (!scootgangRX) {
+    throw new Error("Canal Bluetooth RX no disponible");
+  }
+
+  console.log("SCOOTGANG: Enviando solicitud 0x5C");
+
+  if (scootgangRX.properties.write) {
+    await scootgangRX.writeValueWithResponse(frame);
+  } else if (scootgangRX.properties.writeWithoutResponse) {
+    await scootgangRX.writeValueWithoutResponse(frame);
+  } else {
+    throw new Error("El canal RX no permite escritura");
+  }
+
+  this.setPhase("awaiting-app-key");
+
+  console.log("SCOOTGANG: Solicitud 0x5C enviada");
+}
 
 async startPairing() {
   if (!this.device?.gatt?.connected) {
