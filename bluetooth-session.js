@@ -213,6 +213,63 @@ async cryptoNext(data, counter) {
   return result;
 }
 
+async computeMac(frame, counter) {
+  if (!(this.activeKey instanceof Uint8Array) ||
+      this.activeKey.length !== 16) {
+    throw new Error("Clave activa no preparada");
+  }
+
+  if (!(this.bleData instanceof Uint8Array) ||
+      this.bleData.length !== 16) {
+    throw new Error("Datos Bluetooth no disponibles");
+  }
+
+  const auth = new Uint8Array(16);
+  auth[0] = 0x59;
+  auth[1] = (counter >>> 24) & 0xFF;
+  auth[2] = (counter >>> 16) & 0xFF;
+  auth[3] = (counter >>> 8) & 0xFF;
+  auth[4] = counter & 0xFF;
+  auth.set(this.bleData.slice(0, 8), 5);
+  auth[15] = frame.length - 3;
+
+  const xor = (a, b) => {
+    const result = new Uint8Array(16);
+    for (let i = 0; i < 16; i++) {
+      result[i] = a[i] ^ b[i];
+    }
+    return result;
+  };
+
+  let state = await this.aesBlock(this.activeKey, auth);
+
+  const header = new Uint8Array(16);
+  header.set(frame.slice(0, 3));
+
+  state = await this.aesBlock(
+    this.activeKey,
+    xor(header, state)
+  );
+
+  for (let offset = 3; offset < frame.length; offset += 16) {
+    const block = new Uint8Array(16);
+    block.set(frame.slice(offset, offset + 16));
+
+    state = await this.aesBlock(
+      this.activeKey,
+      xor(block, state)
+    );
+  }
+
+  auth[0] = 0x01;
+  auth[15] = 0x00;
+
+  const mask = await this.aesBlock(this.activeKey, auth);
+  const mac = xor(state, mask);
+
+  return mac.slice(0, 4);
+}
+
 async encryptInitialFrame(frame, deviceName) {
   if (
     !(frame instanceof Uint8Array) ||
