@@ -533,6 +533,59 @@ async sendAppPairingRequest() {
   console.log("SCOOTGANG: Solicitud 0x5C enviada");
 }
 
+async decryptAppPairingResponse(packet) {
+  const data = new Uint8Array(packet);
+
+  if (
+    data.length < 9 ||
+    data[0] !== 0x5A ||
+    data[1] !== 0xA5
+  ) {
+    throw new Error("Paquete Bluetooth no válido");
+  }
+
+  if (data.length !== data[2] + 9) {
+    throw new Error("Longitud del paquete incorrecta");
+  }
+
+  const counter =
+    (data[data.length - 2] << 8) |
+    data[data.length - 1];
+
+  if (counter < 2 || counter <= this.messageCounter) {
+    throw new Error("Contador de respuesta no válido");
+  }
+
+  const payload = await this.cryptoNext(
+    data.slice(3, -6),
+    counter
+  );
+
+  const frame = new Uint8Array(payload.length + 3);
+  frame.set(data.slice(0, 3));
+  frame.set(payload, 3);
+
+  const expectedMac = await this.computeMac(
+    frame,
+    counter
+  );
+
+  const receivedMac = data.slice(-6, -2);
+
+  let difference = 0;
+  for (let i = 0; i < 4; i++) {
+    difference |= expectedMac[i] ^ receivedMac[i];
+  }
+
+  if (difference !== 0) {
+    throw new Error("Autenticación MAC incorrecta");
+  }
+
+  this.messageCounter = counter;
+
+  return frame;
+}
+
 async startPairing() {
   if (!this.device?.gatt?.connected) {
     throw new Error("El patinete no está conectado");
