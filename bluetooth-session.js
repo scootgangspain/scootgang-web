@@ -144,6 +144,28 @@ async createInitialKey(deviceName) {
   return this.deriveKey(nameBytes, protocolKey);
 }
 
+async prepareActiveKey(deviceName) {
+  if (
+    !this.initialKeyReceived ||
+    !(this.bleData instanceof Uint8Array) ||
+    this.bleData.length !== 16
+  ) {
+    throw new Error("Faltan datos de la fase 0x5B");
+  }
+
+  const nameBytes = new Uint8Array(16);
+  nameBytes.set(
+    new TextEncoder().encode(deviceName).slice(0, 16)
+  );
+
+  this.activeKey = await this.deriveKey(
+    nameBytes,
+    this.bleData
+  );
+
+  console.log("SCOOTGANG: Clave activa preparada");
+}
+
 async encryptInitialFrame(frame, deviceName) {
   if (
     !(frame instanceof Uint8Array) ||
