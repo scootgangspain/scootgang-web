@@ -544,7 +544,7 @@ async decryptAppPairingResponse(packet) {
     throw new Error("Paquete Bluetooth no válido");
   }
 
-  if (data.length !== data[2] + 9) {
+  if (data.length !== data[2] + 10) {
     throw new Error("Longitud del paquete incorrecta");
   }
 
