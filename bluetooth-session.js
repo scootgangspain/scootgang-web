@@ -190,6 +190,50 @@ result[3 + encrypted.length + 3] = (checksum >>> 8) & 255;
   return result;
 }
 
+async decryptInitialFrame(frame, deviceName) {
+  if (
+    !(frame instanceof Uint8Array) ||
+    frame.length < 9 ||
+    frame[0] !== 0x5A ||
+    frame[1] !== 0xA5
+  ) {
+    throw new Error("Respuesta Bluetooth no válida");
+  }
+
+  const counter =
+    (frame[frame.length - 2] << 8) |
+    frame[frame.length - 1];
+
+  if (counter !== 0) {
+    throw new Error("No es un paquete de sesión inicial");
+  }
+
+  const expectedLength = frame[2] + 13;
+
+  if (frame.length !== expectedLength) {
+    throw new Error("Longitud de respuesta incorrecta");
+  }
+
+  const protocolKey = Uint8Array.of(
+    151, 207, 184, 2, 132, 65, 67, 222,
+    86, 0, 43, 59, 52, 120, 10, 93
+  );
+
+  const initialKey = await this.createInitialKey(deviceName);
+  const mask = await this.aesBlock(initialKey, protocolKey);
+
+  const encrypted = frame.slice(3, frame.length - 6);
+  const decrypted = new Uint8Array(3 + encrypted.length);
+
+  decrypted.set(frame.slice(0, 3));
+
+  for (let i = 0; i < encrypted.length; i++) {
+    decrypted[3 + i] = encrypted[i] ^ mask[i % 16];
+  }
+
+  return decrypted;
+}
+
 buildInitialKeyRequest(deviceName) {
   if (typeof deviceName !== "string" || !deviceName) {
     throw new Error("Nombre Bluetooth no válido");
