@@ -166,6 +166,53 @@ async prepareActiveKey(deviceName) {
   console.log("SCOOTGANG: Clave activa preparada");
 }
 
+async cryptoNext(data, counter) {
+  if (
+    !(this.activeKey instanceof Uint8Array) ||
+    this.activeKey.length !== 16
+  ) {
+    throw new Error("Clave activa no preparada");
+  }
+
+  if (
+    !(this.bleData instanceof Uint8Array) ||
+    this.bleData.length !== 16
+  ) {
+    throw new Error("Datos Bluetooth no disponibles");
+  }
+
+  const result = new Uint8Array(data.length);
+  const block = new Uint8Array(16);
+
+  block[0] = 0x01;
+  block[1] = (counter >>> 24) & 0xFF;
+  block[2] = (counter >>> 16) & 0xFF;
+  block[3] = (counter >>> 8) & 0xFF;
+  block[4] = counter & 0xFF;
+  block.set(this.bleData.slice(0, 8), 5);
+
+  for (let offset = 0, n = 1;
+       offset < data.length;
+       offset += 16, n++) {
+
+    block[15] = n & 0xFF;
+
+    const mask = await this.aesBlock(
+      this.activeKey,
+      block
+    );
+
+    for (let i = 0;
+         i < 16 && offset + i < data.length;
+         i++) {
+      result[offset + i] =
+        data[offset + i] ^ mask[i];
+    }
+  }
+
+  return result;
+}
+
 async encryptInitialFrame(frame, deviceName) {
   if (
     !(frame instanceof Uint8Array) ||
