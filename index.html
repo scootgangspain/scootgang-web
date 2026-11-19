@@ -709,6 +709,7 @@ scootgangTX = await scootgangService.getCharacteristic(
 );
 
 await escucharScootgangBluetooth();
+await window.scootgangSession.startPairing();
 
 actualizarEstadoMapas();
 document.getElementById("versionMCU").textContent =
@@ -1177,7 +1178,7 @@ if (window.scootgangSession) {
 
 </script>
 
-<script src="./bluetooth-session.js?v=12"></script>
+<script src="./bluetooth-session.js?v=13"></script>
 
 </body>
 </html>
