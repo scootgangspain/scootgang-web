@@ -1156,6 +1156,11 @@ while (bufferBluetooth.length >= 3) {
   bufferBluetooth = bufferBluetooth.slice(longitudTotal);
 
   console.log("SCOOTGANG PAQUETE:", paquete);
+  
+if (window.scootgangSession) {
+  window.scootgangSession.lastEncryptedFrame = paquete.slice();
+}
+
 }
 
 
