@@ -292,9 +292,20 @@ buildInitialKeyRequest(deviceName) {
   );
 }
 
+
 async startPairing() {
   if (!this.device?.gatt?.connected) {
-    throw new Error("El patinete no está conectado por Bluetooth");
+    throw new Error("El patinete no está conectado");
+  }
+
+  if (!scootgangRX) {
+    throw new Error("Canal Bluetooth RX no disponible");
+  }
+
+  const deviceName = this.device.name;
+
+  if (!deviceName) {
+    throw new Error("No se ha detectado el nombre Bluetooth");
   }
 
   this.paired = false;
@@ -302,23 +313,44 @@ async startPairing() {
   this.recalcReceived = false;
   this.confirmReceived = false;
   this.messageCounter = 0;
+  this.bleData = null;
+  this.initialKeyTail = null;
 
   this.setPhase("pairing-initializing");
 
-  console.log("SCOOTGANG: Preparando emparejamiento seguro");
-}
+  try {
+    const frame = this.buildInitialKeyRequest(deviceName);
 
-  reset() {
-    this.device = null;
-    this.paired = false;
-this.initialKeyReceived = false;
-this.recalcReceived = false;
-this.confirmReceived = false;
-this.sessionKey = null;
-this.messageCounter = 0;
+    const encrypted = await this.encryptInitialFrame(
+      frame,
+      deviceName
+    );
 
-    this.setPhase("disconnected");
+    console.log(
+      "SCOOTGANG: Enviando solicitud inicial",
+      Array.from(encrypted)
+    );
+
+    if (scootgangRX.properties.write) {
+      await scootgangRX.writeValueWithResponse(encrypted);
+    } else if (scootgangRX.properties.writeWithoutResponse) {
+      await scootgangRX.writeValueWithoutResponse(encrypted);
+    } else {
+      throw new Error("El canal RX no permite escritura");
+    }
+
+    this.setPhase("awaiting-initial-key");
+
+    console.log(
+      "SCOOTGANG: Solicitud enviada, esperando respuesta"
+    );
+
+  } catch (error) {
+    this.setPhase("pairing-error");
+    console.error("SCOOTGANG: Error de emparejamiento", error);
+    throw error;
   }
 }
+
 
 window.scootgangSession = new ScootgangBluetoothSession();
