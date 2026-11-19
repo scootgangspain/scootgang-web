@@ -1187,6 +1187,35 @@ await sesion.prepareAppPairing();
     });
 }
 
+if (
+  window.scootgangSession.phase === "awaiting-app-key"
+) {
+  const sesion = window.scootgangSession;
+
+  sesion.decryptAppPairingResponse(paquete)
+    .then(respuesta => {
+      const frame = sesion.parseFrame(respuesta);
+
+      if (!frame || frame.cmd !== 0x5C) {
+        console.log(
+          "SCOOTGANG: Respuesta de otro comando"
+        );
+        return;
+      }
+
+      console.log(
+        "SCOOTGANG: Respuesta 0x5C recibida",
+        "Argumento:", frame.arg
+      );
+    })
+    .catch(error => {
+      console.error(
+        "SCOOTGANG: Error procesando 0x5C",
+        error
+      );
+    });
+}
+
 }
 
 }
