@@ -1168,10 +1168,13 @@ if (
   const sesion = window.scootgangSession;
 
   sesion.decryptInitialFrame(paquete, sesion.device.name)
-    .then(respuesta => {
+    .then(async respuesta => {
       sesion.processInitialResponse(respuesta);
       sesion.setPhase("initial-key-received");
-
+      
+await sesion.prepareActiveKey(sesion.device.name);
+await sesion.prepareAppPairing();
+      
       console.log(
         "SCOOTGANG: Primera fase de emparejamiento completada"
       );
